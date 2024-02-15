@@ -6,14 +6,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-CONFIG_FILE = os.path.expanduser('~/.meow_config.json')  # Place the config file in the user's home directory
-
-def load_config():
-    if os.path.exists(CONFIG_FILE):
-        with open(CONFIG_FILE, 'r') as file:
-            return json.load(file)
-    return {}
-
 def replace_dupa(file_path, action, custom_text=None):
     with open(file_path, 'r') as file:
         content = file.read()
@@ -35,10 +27,6 @@ def check_for_dupa(file_path):
         content = file.read()
 
     return re.search(r'\bdupa\b', content)
-
-def git_commit(file_path):
-    subprocess.run(['git', 'add', file_path])
-    subprocess.run(['git', 'commit', '-m', 'Remove or replace "dupa"'])
 
 def configure_pre_commit():
     pre_commit_script = """
