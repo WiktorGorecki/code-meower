@@ -33,8 +33,11 @@ def process_config(file_path, config):
 
 def main():
     parser = argparse.ArgumentParser(description='Meow - A code-meower tool')
-    parser.add_argument('action', choices=['init', 'update', 'spit_out_the_fluff', 'catch'], help='Action to perform')
+    parser.add_argument('action', choices=['init', 'update', 'spit_out_the_fluff', 'catch', 'config'], help='Action to perform')
     parser.add_argument('--path', help='Path to run the censor script', default='.')
+    parser.add_argument('--word', help='Word to be substituted', default='dupa')
+    parser.add_argument('--remove', help='Mark the word to be removed')
+    parser.add_argument('--substitute', help='The word that the bad word will be substituted with', default='meow')
 
     args = parser.parse_args()
 
@@ -47,6 +50,30 @@ def main():
     elif args.action == 'catch':
         config = load_config()
         catch_censor(args.path, config)
+    elif args.action == 'config':
+        if not args.word or (not args.remove and not args.substitute):
+            print("Please provide --word and either --remove or --substitute.")
+            sys.exit(1)
+        edit_config(args.word, args.remove, args.substitute)
+
+def save_config(config):
+    with open(CONFIG_FILE, 'w') as file:
+        yaml.dump(config, file)
+
+def edit_config(word, remove, substitute):
+    config = load_config()
+
+    if word not in config:
+        config[word] = {}
+
+    if remove:
+        config[word]['remove'] = True
+        config[word].pop('substitute', None)
+    elif substitute:
+        config[word]['substitute'] = substitute
+        config[word].pop('remove', None)
+
+    save_config(config)
 
 def catch_censor(path='.', config=None):
     config = config or load_config()
