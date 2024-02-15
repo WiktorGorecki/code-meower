@@ -25,16 +25,17 @@ def process_config(file_path, config):
     with open(file_path, 'r', newline='') as file:
         content = file.read()
 
-    for file_format, words in config.items():
-        if file_path.endswith(file_format):
-            for word, actions in words.items():
-                if 'substitute' in actions:
-                    replacement = actions['substitute'].get('substitute', 'meow')
-                    content = re.sub(rf'"{word.strip()}"', replacement, content)
-                    print(f"Found word: {word.strip()}, substituted with: {replacement}")
-                elif 'remove' in actions:
-                    content = re.sub(rf'"{word.strip()}"', '', content)
-                    print(f"Found word: {word.strip()}, removed")
+    for words in config.items():
+        print("1")
+        for word, actions in words.items():
+            print("2")
+            if 'substitute' in actions:
+                replacement = actions['substitute'].get('substitute', 'meow')
+                content = re.sub(rf'"{word.strip()}"', replacement, content)
+                print(f"Found word: {word.strip()}, substituted with: {replacement}")
+            elif 'remove' in actions:
+                content = re.sub(rf'"{word.strip()}"', '', content)
+                print(f"Found word: {word.strip()}, removed")
 
     with open(file_path, 'w', newline='') as file:
         file.write(content)
