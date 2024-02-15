@@ -20,21 +20,27 @@ def save_config(config):
         yaml.dump(config, file)
 
 def process_config(file_path, config):
-    with open(file_path, 'r') as file:
+    print(f"Processing config for file: {file_path}")
+
+    with open(file_path, 'r', newline='') as file:
         content = file.read()
 
     for file_format, words in config.items():
         if file_path.endswith(file_format):
             for word, actions in words.items():
-                for action, action_params in actions.items():
-                    if action == 'substitute':
-                        substitute = action_params.get('substitute', 'meow')
-                        content = re.sub(rf'\b{word}\b', substitute, content)
-                    elif action == 'remove':
-                        content = re.sub(rf'\b{word}\b', '', content)
+                if 'substitute' in actions:
+                    replacement = actions['substitute'].get('substitute', 'meow')
+                    content = re.sub(rf'"{word.strip()}"', replacement, content)
+                    print(f"Found word: {word.strip()}, substituted with: {replacement}")
+                elif 'remove' in actions:
+                    content = re.sub(rf'"{word.strip()}"', '', content)
+                    print(f"Found word: {word.strip()}, removed")
 
-    with open(file_path, 'w') as file:
+    with open(file_path, 'w', newline='') as file:
         file.write(content)
+
+
+
 
 def edit_config(word, remove, substitute):
     config = load_config()
@@ -87,10 +93,12 @@ def uninstall_code_meower():
     subprocess.run(['pip', 'uninstall', '-y', 'code-meower'])
 
 def catch_censor(path='.', config=None):
+    print(f"Searching for files to censor in: {path}")
     config = config or load_config()
     for root, dirs, files in os.walk(path):
         for file_name in files:
             file_path = os.path.join(root, file_name)
+            print(f"Found file: {file_path}")
             process_config(file_path, config)
 
 def show_config():
