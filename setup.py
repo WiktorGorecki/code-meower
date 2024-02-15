@@ -8,6 +8,6 @@ setup(
     install_requires=[],
     entry_points='''
         [console_scripts]
-        meow=main:main
+        meow=code_meower.main:main
     ''',
 )

@@ -2,6 +2,6 @@
 echo Installing code-meower...
 
 REM Install the tool
-pip install /src/main.py
+pip install .
 
 echo Installation complete.

@@ -1,0 +1,8 @@
+setup.py
+src/code_meower/__init__.py
+src/code_meower/main.py
+src/code_meower.egg-info/PKG-INFO
+src/code_meower.egg-info/SOURCES.txt
+src/code_meower.egg-info/dependency_links.txt
+src/code_meower.egg-info/entry_points.txt
+src/code_meower.egg-info/top_level.txt

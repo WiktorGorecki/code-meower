@@ -1,0 +1,2 @@
+[console_scripts]
+meow = code_meower.main:main
