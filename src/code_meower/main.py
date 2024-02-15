@@ -25,20 +25,22 @@ def process_config(file_path, config):
     with open(file_path, 'r', newline='') as file:
         content = file.read()
 
-    for words in config.items():
-        print("1")
-        for word, actions in words.items():
-            print("2")
-            if 'substitute' in actions:
-                replacement = actions['substitute'].get('substitute', 'meow')
-                content = re.sub(rf'"{word.strip()}"', replacement, content)
-                print(f"Found word: {word.strip()}, substituted with: {replacement}")
-            elif 'remove' in actions:
-                content = re.sub(rf'"{word.strip()}"', '', content)
-                print(f"Found word: {word.strip()}, removed")
+    for word, actions in config.items():
+        if isinstance(actions, str):  # Check if actions is a string
+            replacement = actions
+            content = re.sub(rf'\b{re.escape(word.strip())}\b', replacement, content)
+            print(f"Found word: {word.strip()}, substituted with: {replacement}")
+        elif isinstance(actions, dict):  # Check if actions is a dictionary
+            replacement = actions.get('substitute', 'meow')
+            content = re.sub(rf'\b{re.escape(word.strip())}\b', replacement, content)
+            print(f"Found word: {word.strip()}, substituted with: {replacement}")
+        elif 'remove' in actions:
+            content = re.sub(rf'\b{re.escape(word.strip())}\b', '', content)
+            print(f"Found word: {word.strip()}, removed")
 
     with open(file_path, 'w', newline='') as file:
         file.write(content)
+
 
 
 
