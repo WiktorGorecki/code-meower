@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import re
+import subprocess
 import sys
 import yaml
 from pathlib import Path
@@ -90,12 +91,15 @@ def catch_censor(path='.', config=None):
     for root, dirs, files in os.walk(path):
         for file_name in files:
             file_path = os.path.join(root, file_name)
-            if file_name.endswith(('.py', '.yaml', '.json')):  # Add supported file formats
-                process_config(file_path, config)
+            process_config(file_path, config)
+
+def show_config():
+    config = load_config()
+    print(json.dumps(config, indent=2))
 
 def main():
     parser = argparse.ArgumentParser(description='Meow - A code-meower tool')
-    parser.add_argument('action', choices=['init', 'update', 'spit_out_the_fluff', 'catch', 'config'],
+    parser.add_argument('action', choices=['init', 'update', 'spit_out_the_fluff', 'catch', 'config', 'show-config'],
                         help='Action to perform')
     parser.add_argument('--path', help='Path to run the censor script', default='.')
     parser.add_argument('--word', help='Word to configure')
@@ -118,6 +122,8 @@ def main():
             print("Please provide --word and either --remove or --substitute.")
             sys.exit(1)
         edit_config(args.word, args.remove, args.substitute)
+    elif args.action == 'show-config':
+        show_config()
 
 if __name__ == "__main__":
     main()
