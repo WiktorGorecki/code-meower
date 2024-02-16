@@ -65,7 +65,7 @@ def configure_pre_commit():
 #!/bin/bash
 
 # Ensure code-meower is installed
-command -v meow >/dev/null 2>&1 || { echo >&2 "code-meower not found. Please install it first using 'pip install .'; exit 1; }
+command -v meow >/dev/null 2>&1 || { echo >&2 "code-meower not found. Please install it first using 'pip install .'"; exit 1; }
 
 # Run code-meower before committing
 meow
