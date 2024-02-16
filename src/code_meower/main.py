@@ -129,6 +129,7 @@ def main():
         update_code_meower()
     elif args.action == 'spit_out_the_fluff':
         print("Uninstalling code-meower...")
+        uninstall_code_meower()
     elif args.action == 'catch':
         config = load_config()
         catch_censor(args.path, config)
