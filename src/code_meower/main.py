@@ -71,7 +71,8 @@ command -v code-meower >/dev/null 2>&1 || { echo >&2 "code-meower not found. Ple
 code-meower
 """
 
-    pre_commit_path = os.path.join('.git', 'hooks', 'pre-commit')
+    git_hooks_dir = os.path.join('.git', 'hooks')
+    pre_commit_path = os.path.join(git_hooks_dir, 'pre-commit')
 
     if os.path.exists(pre_commit_path):
         # Update the content between #meow and #woem
@@ -82,6 +83,9 @@ code-meower
         with open(pre_commit_path, 'w') as pre_commit_file:
             pre_commit_file.write(content)
     else:
+        # Create the .git/hooks directory if it doesn't exist
+        os.makedirs(git_hooks_dir, exist_ok=True)
+
         # Create the pre-commit hook script
         with open(pre_commit_path, 'w') as pre_commit_file:
             pre_commit_file.write(pre_commit_script)
@@ -110,7 +114,7 @@ def show_config():
 
 def main():
     parser = argparse.ArgumentParser(description='Meow - A code-meower tool')
-    parser.add_argument('action', choices=['init', 'update', 'spit_out_the_fluff', 'catch', 'config', 'show-config'],
+    parser.add_argument('action', nargs='?', default='catch', choices=['init', 'update', 'spit_out_the_fluff', 'catch', 'config', 'show-config'],
                         help='Action to perform')
     parser.add_argument('--path', help='Path to run the censor script', default='.')
     parser.add_argument('--word', help='Word to configure')
