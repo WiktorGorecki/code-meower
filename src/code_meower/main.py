@@ -114,7 +114,7 @@ def show_config():
 
 def main():
     parser = argparse.ArgumentParser(description='Meow - A code-meower tool')
-    parser.add_argument('action', choices=['init', 'update', 'spit_out_the_fluff', 'catch', 'config', 'show-config'],
+    parser.add_argument('action', nargs='?', default='catch', choices=['init', 'update', 'spit_out_the_fluff', 'catch', 'config', 'show-config'],
                         help='Action to perform')
     parser.add_argument('--path', help='Path to run the censor script', default='.')
     parser.add_argument('--word', help='Word to configure')
