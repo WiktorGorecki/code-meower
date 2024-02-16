@@ -103,6 +103,8 @@ def catch_censor(path='.', config=None):
     print(f"Searching for files to censor in: {path}")
     config = config or load_config()
     for root, dirs, files in os.walk(path):
+        if '.git' in dirs:
+            dirs.remove('.git')
         for file_name in files:
             file_path = os.path.join(root, file_name)
             print(f"Found file: {file_path}")
