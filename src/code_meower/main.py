@@ -142,6 +142,9 @@ def main():
         edit_config(args.word, args.remove, args.substitute)
     elif args.action == 'show-config':
         show_config()
+    elif args.action:
+        print("Invalid arguments")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
