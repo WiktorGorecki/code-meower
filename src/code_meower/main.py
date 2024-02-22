@@ -29,20 +29,17 @@ def process_config(file_path, config):
         if isinstance(actions, str):  # Check if actions is a string
             replacement = actions
             content = re.sub(rf'\b{re.escape(word.strip())}\b', replacement, content)
-            print(f"Found word: {word.strip()}, substituted with: {replacement}")
+            # print(f"Found word: {word.strip()}, substituted with: {replacement}")
         elif isinstance(actions, dict):  # Check if actions is a dictionary
             replacement = actions.get('substitute', 'meow')
             content = re.sub(rf'\b{re.escape(word.strip())}\b', replacement, content)
-            print(f"Found word: {word.strip()}, substituted with: {replacement}")
+            # print(f"Found word: {word.strip()}, substituted with: {replacement}")
         elif 'remove' in actions:
             content = re.sub(rf'\b{re.escape(word.strip())}\b', '', content)
             print(f"Found word: {word.strip()}, removed")
 
     with open(file_path, 'w', newline='') as file:
         file.write(content)
-
-
-
 
 
 def edit_config(word, remove, substitute):
@@ -100,14 +97,14 @@ def uninstall_code_meower():
     subprocess.run(['pip', 'uninstall', '-y', 'code-meower'])
 
 def catch_censor(path='.', config=None):
-    print(f"Searching for files to censor in: {path}")
+    # print(f"Searching for files to censor in: {path}")
     config = config or load_config()
     for root, dirs, files in os.walk(path):
         if '.git' in dirs:
             dirs.remove('.git')
         for file_name in files:
             file_path = os.path.join(root, file_name)
-            print(f"Found file: {file_path}")
+            # print(f"Found file: {file_path}")
             process_config(file_path, config)
 
 def show_config():
