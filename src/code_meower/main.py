@@ -5,7 +5,6 @@ import re
 import subprocess
 import sys
 import yaml
-from pathlib import Path
 
 CONFIG_FILE = os.path.expanduser('~/.meow_config.yaml')  # Place the config file in the user's home directory
 
@@ -38,7 +37,7 @@ def process_config(file_path, config):
             content = re.sub(rf'\b{re.escape(word.strip())}\b', '', content)
             print(f"Found word: {word.strip()}, removed")
 
-    with open(file_path, 'w', newline='') as file:
+    with open(file_path, 'w', newline='', encoding='utf-8', errors='ignore') as file:
         file.write(content)
 
 
@@ -103,6 +102,8 @@ def catch_censor(path='.', config=None):
     print(f"Searching for files to censor in: {path}")
     config = config or load_config()
     for root, dirs, files in os.walk(path):
+        if '.git' in dirs:
+            dirs.remove('.git')
         for file_name in files:
             file_path = os.path.join(root, file_name)
             print(f"Found file: {file_path}")
@@ -114,12 +115,20 @@ def show_config():
 
 def main():
     parser = argparse.ArgumentParser(description='Meow - A code-meower tool')
-    parser.add_argument('action', nargs='?', default='catch', choices=['init', 'update', 'spit_out_the_fluff', 'catch', 'config', 'show-config'],
-                        help='Action to perform')
-    parser.add_argument('--path', help='Path to run the censor script', default='.')
-    parser.add_argument('--word', help='Word to configure')
-    parser.add_argument('--remove', action='store_true', help='Remove the specified word')
-    parser.add_argument('--substitute', help='Substitute for the specified word')
+    subparsers = parser.add_subparsers(dest='action', metavar='action', help='Action to perform')
+
+    catch_parser = subparsers.add_parser('catch', help='Catch and censor text files')
+    catch_parser.add_argument('--path', help='Path to run the censor script', default='.')
+
+    config_parser = subparsers.add_parser('config', help='Edit configuration')
+    config_parser.add_argument('--word', help='Word to configure')
+    config_parser.add_argument('--remove', action='store_true', help='Remove the specified word')
+    config_parser.add_argument('--substitute', help='Substitute for the specified word')
+
+    subparsers.add_parser('init', help='Configure pre-commit hook')
+    subparsers.add_parser('update', help='Update code-meower')
+    subparsers.add_parser('spit_out_the_fluff', help='Uninstall code-meower').set_defaults(func=uninstall_code_meower)
+    subparsers.add_parser('show-config', help='Show current configuration').set_defaults(func=show_config)
 
     args = parser.parse_args()
 
@@ -140,6 +149,8 @@ def main():
         edit_config(args.word, args.remove, args.substitute)
     elif args.action == 'show-config':
         show_config()
+    elif hasattr(args, 'func'):
+        args.func()
 
 if __name__ == "__main__":
     main()
